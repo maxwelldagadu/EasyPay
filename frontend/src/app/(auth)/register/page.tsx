@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { AuthForm } from "@/features/authentication/components/auth-form";
+import { AuthForm } from "@/components/my-components/features/authentication/components/auth-form";
 
 // Present account creation with the same authentication options used on the login screen.
 export default function RegisterPage() {

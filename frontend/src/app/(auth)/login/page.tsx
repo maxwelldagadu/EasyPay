@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { AuthForm } from "@/features/authentication/components/auth-form";
+import { AuthForm } from "@/components/my-components/features/authentication/components/auth-form";
 
 // Present the sign-in flow and a direct route to account registration.
 export default function LoginPage() {

@@ -1,30 +1,25 @@
-import Image from "next/image";
 import Link from "next/link";
 
-// Navbar component
-
+// Give visitors clear routes to the product story and account entry points.
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between bg-slate-950 text-white">
-      <div className="container mx-auto py-4">
-        <Link href="/">
-          {/* <Image src="/logo.svg" alt="EasyPay Logo" width={100} height={40} /> */}
-          <span className="text-3xl font-bold">EasyPay</span>
+    <nav className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 text-[#f3f1e8] sm:px-8 lg:px-12">
+      <Link aria-label="EasyPay home" className="flex items-center gap-3" href="/">
+        <span className="grid size-9 place-items-center rounded-full bg-[#dfff78] text-sm font-black text-[#161811]">
+          E
+        </span>
+        <span className="font-google-sans text-xl font-semibold tracking-tight">EasyPay</span>
+      </Link>
+
+      <div className="flex items-center gap-3">
+        <Link className="hidden px-3 py-2 text-sm text-white/75 transition-colors hover:text-white sm:inline-flex" href="/login">
+          Sign in
         </Link>
-      </div>
-      {/* Keep navigation actions centered and sized to their content rather than stretching with the navbar. */}
-      <div className="flex items-center gap-10">
         <Link
-          className="inline-flex items-center whitespace-nowrap rounded-lg bg-white p-3 font-open-sans text-sm font-semibold leading-none text-slate-950"
+          className="inline-flex items-center gap-2 rounded-full bg-[#dfff78] px-4 py-2.5 text-sm font-semibold text-[#161811] transition-transform hover:scale-[1.03] sm:px-5"
           href="/register"
         >
-          Get Started
-        </Link>
-        <Link
-          className="inline-flex items-center whitespace-nowrap rounded-lg bg-white p-3 font-open-sans text-sm font-semibold leading-none text-slate-950"
-          href="/login"
-        >
-          Sign in
+          Get started <span aria-hidden="true">↗</span>
         </Link>
       </div>
     </nav>
