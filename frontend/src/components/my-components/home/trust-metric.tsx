@@ -46,24 +46,20 @@ const cardContent = [
 
 const cardStyles = [
   {
-    shell: "border-white/50 bg-gradient-to-br from-[#303927] via-[#20271d] to-[#141811]",
-    accent: "#dfff78",
-    icon: "bg-[#dfff78] text-[#171910]",
+    shell: "border-neon-purple/30 bg-[#21182b] bg-gradient-to-br from-neon-purple/25 via-[#291a3b] to-[#17121e]",
+    accent: "var(--color-neon-purple)",
   },
   {
-    shell: "border-[#c7d8ff]/30 bg-gradient-to-br from-[#243657] via-[#1c2a43] to-[#111827]",
-    accent: "#a9c7ff",
-    icon: "bg-[#a9c7ff] text-[#17233a]",
+    shell: "border-neon-magenta/30 bg-[#251a2b] bg-gradient-to-br from-neon-magenta/25 via-[#351d3d] to-[#1b1320]",
+    accent: "var(--color-neon-magenta)",
   },
   {
-    shell: "border-[#ffe4a3]/30 bg-gradient-to-br from-[#66502d] via-[#473921] to-[#241f17]",
-    accent: "#ffd984",
-    icon: "bg-[#ffd984] text-[#33291a]",
+    shell: "border-neon-purple/35 bg-[#261a36] bg-gradient-to-br from-[#4c2890] via-[#301b53] to-[#1b1426]",
+    accent: "var(--color-neon-purple)",
   },
   {
-    shell: "border-[#ffc7ba]/30 bg-gradient-to-br from-[#68423a] via-[#4b302b] to-[#251918]",
-    accent: "#ffb6a3",
-    icon: "bg-[#ffb6a3] text-[#3a211d]",
+    shell: "border-neon-magenta/35 bg-[#2a192b] bg-gradient-to-br from-[#782a86] via-[#421d4d] to-[#201327]",
+    accent: "var(--color-neon-magenta)",
   },
 ] as const;
 
@@ -132,9 +128,14 @@ export default function TrustMetric() {
           pin: pinned,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.425,
+          scrub: 0.6,
           anticipatePin: 1,
-          snap: [0, 1 / 3, 2 / 3, 1],
+          snap: {
+            snapTo: [0, 1 / 3, 2 / 3, 1],
+            delay: 0.08,
+            duration: { min: 0.25, max: 0.5 },
+            ease: "power2.inOut",
+          },
           onUpdate: (trigger) => {
             const nextCard =
               trigger.progress < 1 / 3
@@ -155,31 +156,31 @@ export default function TrustMetric() {
           rotate: 0,
           scale: 1,
           zIndex: 4,
-          duration: 0.5,
-          ease: "power3.out",
+          duration: 0.65,
+          ease: "power2.inOut",
         })
-        .to(cards[0], { y: 20, rotate: -3, scale: 0.965, zIndex: 3, duration: 0.5, ease: "power3.inOut" }, "<")
+        .to(cards[0], { y: 20, rotate: -3, scale: 0.965, zIndex: 3, duration: 0.65, ease: "power2.inOut" }, "<")
         .to(cards[2], {
           y: 0,
           rotate: 0,
           scale: 1,
           zIndex: 4,
-          duration: 0.5,
-          ease: "power3.out",
+          duration: 0.65,
+          ease: "power2.inOut",
         })
-        .to(cards[1], { y: 20, rotate: 3, scale: 0.965, zIndex: 3, duration: 0.5, ease: "power3.inOut" }, "<")
-        .to(cards[0], { y: 40, rotate: -3, scale: 0.93, zIndex: 2, duration: 0.5, ease: "power3.inOut" }, "<")
+        .to(cards[1], { y: 20, rotate: 3, scale: 0.965, zIndex: 3, duration: 0.65, ease: "power2.inOut" }, "<")
+        .to(cards[0], { y: 40, rotate: -3, scale: 0.93, zIndex: 2, duration: 0.65, ease: "power2.inOut" }, "<")
         .to(cards[3], {
           y: 0,
           rotate: 0,
           scale: 1,
           zIndex: 4,
-          duration: 0.5,
-          ease: "power3.out",
+          duration: 0.65,
+          ease: "power2.inOut",
         })
-        .to(cards[2], { y: 20, rotate: -3, scale: 0.965, zIndex: 3, duration: 0.5, ease: "power3.inOut" }, "<")
-        .to(cards[1], { y: 40, rotate: -3, scale: 0.93, zIndex: 2, duration: 0.5, ease: "power3.inOut" }, "<")
-        .to(cards[0], { y: 60, rotate: 2, scale: 0.895, zIndex: 1, duration: 0.5, ease: "power3.inOut" }, "<");
+        .to(cards[2], { y: 20, rotate: -3, scale: 0.965, zIndex: 3, duration: 0.65, ease: "power2.inOut" }, "<")
+        .to(cards[1], { y: 40, rotate: -3, scale: 0.93, zIndex: 2, duration: 0.65, ease: "power2.inOut" }, "<")
+        .to(cards[0], { y: 60, rotate: 2, scale: 0.895, zIndex: 1, duration: 0.65, ease: "power2.inOut" }, "<");
 
     }, pinned);
 
@@ -193,21 +194,21 @@ export default function TrustMetric() {
     <section
       ref={sectionRef}
       aria-labelledby="trust-metric-heading"
-      className="relative h-[400svh] bg-[#e8e9df] text-[#171910]"
+      className="relative h-[400svh] bg-[#10120f] text-[#f3f1e8]"
       id="trust-metric"
     >
       <div ref={pinnedRef} className="relative isolate h-svh overflow-hidden">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-36 -top-40 -z-10 size-[34rem] rounded-full border border-[#66734d]/[0.09]"
+          className="pointer-events-none absolute -right-36 -top-40 -z-10 size-[34rem] rounded-full border border-neon-purple/[0.09]"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-20 -z-10 size-[24rem] rounded-full border border-[#66734d]/[0.09]"
+          className="pointer-events-none absolute -right-16 -top-20 -z-10 size-[24rem] rounded-full border border-neon-magenta/[0.12]"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-48 -left-40 -z-10 size-[32rem] rounded-full bg-[#dfff78]/25 blur-[100px]"
+          className="pointer-events-none absolute -bottom-48 -left-40 -z-10 size-[32rem] rounded-full bg-neon-magenta/15 blur-[100px]"
         />
 
         <div className="mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-5 py-10 sm:px-8 lg:px-12">
@@ -215,9 +216,8 @@ export default function TrustMetric() {
             <div
               className="relative z-20 hidden lg:block"
               data-trust-heading
-              style={{ color: activeStyle.accent === "#dfff78" ? "#171910" : "#171910" }}
             >
-              <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#566d32]">
+              <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-neon-purple">
                 <ShieldCheck className="size-4" />
                 {current.eyebrow}
               </p>
@@ -227,24 +227,27 @@ export default function TrustMetric() {
               >
                 {current.title}
                 <br />
-                <span className="font-serif font-normal italic text-[#66734d]">
+                <span className="font-serif font-normal italic" style={{ color: activeStyle.accent }}>
                   {current.italic}
                 </span>
               </h2>
-              <p className="mt-6 max-w-lg text-base leading-7 text-black/60 sm:text-lg sm:leading-8">
+              <p className="mt-6 max-w-lg text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
                 {current.description}
               </p>
 
               <div className="mt-9 flex gap-2" aria-label={`Card ${activeCard + 1} of 4`}>
                 {[0, 1, 2, 3].map((index) => (
                   <span
-                    className="relative h-1 w-12 overflow-hidden rounded-full bg-black/10"
+                    className="relative h-1 w-12 overflow-hidden rounded-full bg-white/15"
                     key={index}
                   >
                     <span
-                      className="absolute inset-0 origin-left rounded-full bg-[#566d32] transition-transform duration-500"
+                      className="absolute inset-0 origin-left rounded-full transition-transform duration-500"
                       data-card-progress
-                      style={{ transform: `scaleX(${index === activeCard ? 1 : 0})` }}
+                      style={{
+                        backgroundColor: activeStyle.accent,
+                        transform: `scaleX(${index === activeCard ? 1 : 0})`,
+                      }}
                     />
                   </span>
                 ))}
@@ -254,11 +257,11 @@ export default function TrustMetric() {
             <div className="relative mx-auto h-[410px] w-full max-w-[620px] sm:h-[520px]" data-story-stage>
               <div
                 aria-hidden="true"
-                className="absolute -inset-4 rotate-[-5deg] rounded-[2rem] border border-white/80 bg-white/35 shadow-xl shadow-black/[0.04] sm:-inset-5"
+                className="absolute -inset-4 rotate-[-5deg] rounded-[2rem] border border-neon-magenta/25 bg-[#21182b]/80 shadow-xl shadow-black/25 sm:-inset-5"
               />
               <div
                 aria-hidden="true"
-                className="absolute -inset-2 rotate-[3deg] rounded-[2rem] border border-black/[0.06] bg-white/35 shadow-xl shadow-black/[0.04]"
+                className="absolute -inset-2 rotate-[3deg] rounded-[2rem] border border-white/10 bg-[#191520]/90 shadow-xl shadow-black/25"
               />
               {[0, 1, 2, 3].map((index) => (
                 <article
@@ -286,11 +289,11 @@ export default function TrustMetric() {
             </div>
           </div>
 
-          <div className="mt-7 hidden flex-wrap items-center justify-between gap-4 border-t border-black/10 pt-5 text-[10px] font-semibold uppercase tracking-[0.15em] text-black/40 lg:flex">
+          <div className="mt-7 hidden flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/45 lg:flex">
             <span>Independent budgets</span>
-            <span className="size-1 rounded-full bg-[#899273]" />
+            <span className="size-1 rounded-full bg-neon-purple/70" />
             <span>Deterministic backend checks</span>
-            <span className="size-1 rounded-full bg-[#899273]" />
+            <span className="size-1 rounded-full bg-neon-magenta/70" />
             <span>Pause any agent instantly</span>
           </div>
         </div>
@@ -308,7 +311,7 @@ export default function TrustMetric() {
 function SpendingCard() {
   return (
     <CardFrame
-      accent="#dfff78"
+      accent="var(--color-neon-purple)"
       icon={<CreditCard className="size-5" />}
       title="Shopping Assistant"
       subtitle="Agent spending card · Example"
@@ -329,7 +332,7 @@ function SpendingCard() {
 function ApprovalCard() {
   return (
     <CardFrame
-      accent="#a9c7ff"
+      accent="var(--color-neon-magenta)"
       icon={<Fingerprint className="size-5" />}
       title="Business Payments"
       subtitle="Transaction authorization · Secure"
@@ -344,7 +347,7 @@ function ApprovalCard() {
           </div>
           <div className="grid size-14 grid-cols-2 gap-1 rounded-2xl border border-white/10 p-2">
             {[0, 1, 2, 3].map((dot) => (
-              <span className="m-auto size-2 rounded-full bg-[#a9c7ff]" key={dot} />
+              <span className="m-auto size-2 rounded-full bg-neon-purple" key={dot} />
             ))}
           </div>
         </div>
@@ -363,7 +366,7 @@ function ApprovalCard() {
 function WalletCard() {
   return (
     <CardFrame
-      accent="#ffd984"
+      accent="var(--color-neon-purple)"
       icon={<WalletCards className="size-5" />}
       title="My Testnet Wallet"
       subtitle="Connected · 0x71F2...8D1A"
@@ -388,18 +391,18 @@ function WalletCard() {
 function IntelligenceCard() {
   return (
     <CardFrame
-      accent="#ffb6a3"
+      accent="var(--color-neon-magenta)"
       icon={<Bot className="size-5" />}
       title="EasyPay Agent"
       subtitle="Natural-language payment assistant"
       badge="Review first"
     >
       <div className="mt-7 space-y-3 sm:mt-9">
-        <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-[#ffb6a3] px-4 py-3 text-sm font-medium text-[#3a211d]">
+        <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-neon-magenta px-4 py-3 text-sm font-medium text-[#24112c]">
           Send 45 USDC to my supplier.
         </div>
         <div className="max-w-[92%] rounded-2xl rounded-bl-md border border-white/10 bg-white/[0.055] p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#ffb6a3]">Structured proposal</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-neon-magenta">Structured proposal</p>
           <p className="mt-2 text-sm text-white/80">45 USDC · Supplier wallet · Within daily limit</p>
         </div>
       </div>
@@ -455,7 +458,11 @@ function CardFrame({
           </div>
           <span
             className="inline-flex shrink-0 items-center gap-2 rounded-full border px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] sm:px-3 sm:text-[10px]"
-            style={{ borderColor: `${accent}33`, backgroundColor: `${accent}18`, color: accent }}
+            style={{
+              borderColor: `color-mix(in srgb, ${accent} 30%, transparent)`,
+              backgroundColor: `color-mix(in srgb, ${accent} 10%, transparent)`,
+              color: accent,
+            }}
           >
             <span className="size-1.5 rounded-full" style={{ backgroundColor: accent, boxShadow: `0 0 8px ${accent}` }} />
             {badge}

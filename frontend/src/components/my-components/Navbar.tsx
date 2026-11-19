@@ -12,14 +12,14 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-3">
-        <Link className="hidden px-3 py-2 text-sm text-white/75 transition-colors hover:text-white sm:inline-flex" href="/login">
+        <Link className="hidden px-3 py-2 text-sm text-white transition-colors hover:text-white sm:inline-flex" href="/login">
           Sign in
         </Link>
         <Link
-          className="inline-flex items-center gap-2 rounded-full bg-[#dfff78] px-4 py-2.5 text-sm font-semibold text-[#161811] transition-transform hover:scale-[1.03] sm:px-5"
+          className="inline-flex items-center gap-2 rounded-full bg-neon-purple px-4 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.03] sm:px-5"
           href="/register"
         >
-          Get started <span aria-hidden="true">↗</span>
+          Get started
         </Link>
       </div>
     </nav>
