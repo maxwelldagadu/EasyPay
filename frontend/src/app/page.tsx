@@ -3,7 +3,7 @@ import Link from "next/link";
 // Provide the public entry point and clear navigation to authentication.
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6 text-white">
+    <main className="flex min-h-screen items-center justify-center font-google-sans bg-slate-950 px-6 text-white">
       <section className="max-w-2xl text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
           Testnet USDC payments
