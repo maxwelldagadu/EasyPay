@@ -1,0 +1,15 @@
+Homepage media
+
+- videos/humanoid-payment-loop.mp4
+  Source: Coverr, "Futuristic Androids Facing Each Other and Conversing"
+  https://coverr.co/videos/futuristic-androids-facing-each-other
+  The source page states that the footage is royalty-free for personal and commercial use.
+  The EasyPay payment proposal is a separate interface overlay; the source clip does not depict a real payment.
+
+- images/humanoid-payment-poster.jpg
+  Poster frame downloaded from the Coverr video page above.
+
+- images/agentic-flow.jpg
+  Source: Unsplash image hosted at images.unsplash.com
+  https://images.unsplash.com/photo-1557683316-973673baf926
+  Unsplash License applies.
