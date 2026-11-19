@@ -20,6 +20,10 @@ export default function Footer() {
         aria-hidden="true"
         className="pointer-events-none absolute -top-32 left-1/2 size-72 -translate-x-1/2 rounded-full bg-neon-purple/[0.12] blur-[100px]"
       />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-36 -right-24 size-80 rounded-full bg-neon-magenta/[0.06] blur-[110px]"
+      />
       <div className="relative mx-auto max-w-7xl">
         <div className="flex flex-col gap-8 border-b border-white/[0.08] pb-8 sm:flex-row sm:items-center sm:justify-between sm:pb-10">
           <div className="flex items-center gap-3">

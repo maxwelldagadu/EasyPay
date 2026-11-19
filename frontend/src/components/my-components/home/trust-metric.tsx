@@ -208,6 +208,10 @@ export default function TrustMetric() {
         />
         <div
           aria-hidden="true"
+          className="pointer-events-none absolute -left-40 -top-44 -z-10 size-[30rem] rounded-full bg-neon-purple/12 blur-[110px]"
+        />
+        <div
+          aria-hidden="true"
           className="pointer-events-none absolute -bottom-48 -left-40 -z-10 size-[32rem] rounded-full bg-neon-magenta/15 blur-[100px]"
         />
 
