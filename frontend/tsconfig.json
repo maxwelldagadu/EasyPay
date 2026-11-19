@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    // Target modern browsers while including DOM and current ECMAScript type definitions.
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Allow mixed JS/TS imports, skip dependency declaration checks, and enforce strict app typing.
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    // Support JSON imports, isolated compilation, and the automatic React JSX transform.
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      // Resolve the project alias from the frontend source directory.
+      "@/*": ["./src/*"]
+    }
+  },
+  // Include application and Next-generated type declarations while excluding dependencies.
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
