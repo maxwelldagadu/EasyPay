@@ -44,8 +44,8 @@ export default function Hero(){
           transition={{ duration: 0.65, delay: 0.18 }}
           className="mt-7 max-w-lg text-base leading-7 text-white/60 sm:text-lg sm:leading-8"
         >
-          Create named AI agents that understand payment instructions, follow the limits you set,
-          and wait for your approval before any testnet USDC moves.
+          Create named AI agents that understand payment instructions, follows the limits you set,
+          and wait for your approval before any USDC moves.
         </motion.p>
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 16 }}
