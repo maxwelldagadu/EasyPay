@@ -21,7 +21,8 @@ import type { ReactNode } from "react";
 import Hero from "@/components/my-components/home/hero";
 import Navbar from "@/components/my-components/Navbar";
 import TrustMetric from "@/components/my-components/home/trust-metric";
-
+import CallToAction from "@/components/my-components/home/call-to-action";
+import Footer from "@/components/my-components/home/footer";
 
 
 interface RevealProps {
@@ -55,17 +56,8 @@ export function HomeExperience() {
       <Navbar />
       <Hero/>
       <TrustMetric/>
-
-      <footer className="border-t border-white/[0.08]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-7 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-          <div className="flex items-center gap-2 text-white/75">
-            <span className="grid size-6 place-items-center rounded-full bg-[#dfff78] text-[10px] font-black text-[#161811]">e</span>
-            <span className="font-semibold">easypay</span>
-          </div>
-          <p>AI interprets. Backend validates. You authorize. Blockchain executes.</p>
-          <span className="inline-flex items-center gap-2"><WalletCards className="size-3.5" /> Testnet USDC only</span>
-        </div>
-      </footer>
+      <CallToAction/>
+      <Footer/>
     </main>
   );
 }
