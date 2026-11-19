@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "EasyPay",
-  description: "AI-powered testnet USDC payment platform",
+  description: "AI-powered testnet USDC payment platform for fast and easy transactions.",
 };
 
 // Apply shared font assets and document metadata to every application route.
