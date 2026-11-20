@@ -76,7 +76,7 @@ export default function CallToAction() {
     <section
       ref={sectionRef}
       aria-labelledby="call-to-action-heading"
-      className="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12 lg:py-32"
+      className="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:mx-0 lg:max-w-none lg:px-12 lg:py-32"
       id="get-started"
     >
       <div
@@ -106,7 +106,7 @@ export default function CallToAction() {
               A smarter way to pay
             </p>
             <h2
-              className="mt-7 text-4xl font-medium leading-[1.02] tracking-[-0.065em] sm:text-6xl lg:text-7xl"
+              className="mt-7 text-4xl font-medium leading-[1.02] tracking-[-0.065em] sm:text-6xl lg:text-[5rem]"
               id="call-to-action-heading"
             >
               Put your agents
@@ -116,7 +116,7 @@ export default function CallToAction() {
               </span>
             </h2>
             <p
-              className="mt-6 max-w-xl text-sm leading-7 text-white/55 sm:text-base sm:leading-8"
+              className="mt-6 max-w-xl text-sm leading-7 text-white/55 sm:text-base sm:leading-8 lg:text-lg"
             >
               Create an agent around the way you pay. Set its limits, review every
               proposal, and keep the final say with you.
@@ -136,7 +136,7 @@ export default function CallToAction() {
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[440px] lg:ml-auto" data-cta-preview>
+          <div className="relative w-full max-w-[480px] lg:justify-self-end" data-cta-preview>
             <div
               aria-hidden="true"
               className="absolute -inset-5 rotate-[-6deg] rounded-[2rem] border border-white/10 bg-white/[0.025]"

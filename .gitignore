@@ -1,4 +1,6 @@
 .env.example
+/.env
+/backend/.env
 AGENTS.md
 node_modules/
 .next/

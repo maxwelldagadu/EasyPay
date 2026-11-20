@@ -19,7 +19,6 @@ import {
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 import Hero from "@/components/my-components/home/hero";
-import Navbar from "@/components/my-components/Navbar";
 import TrustMetric from "@/components/my-components/home/trust-metric";
 import CallToAction from "@/components/my-components/home/call-to-action";
 import Footer from "@/components/my-components/home/footer";
@@ -53,7 +52,6 @@ export function HomeExperience() {
 
   return (
     <main className="overflow-hidden bg-[#10120f] font-google-sans text-[#f3f1e8]">
-      <Navbar />
       <Hero/>
       <TrustMetric/>
       <CallToAction/>
