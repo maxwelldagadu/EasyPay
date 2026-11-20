@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { SignOutButton } from "@/features/authentication/components/sign-out-button";
 import { auth } from "@/lib/auth";
 
 // The dashboard depends on request-time authentication and must never be statically prerendered.
@@ -23,6 +24,7 @@ export default async function DashboardPage() {
         <p className="mt-2 text-slate-600">
           Signed in as {session.user.email}. Phase 1 foundation is ready.
         </p>
+        <SignOutButton />
       </div>
     </main>
   );

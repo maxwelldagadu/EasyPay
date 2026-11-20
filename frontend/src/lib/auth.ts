@@ -25,10 +25,10 @@ export const auth = betterAuth({
         ? { rejectUnauthorized: true }
         : false,
   }),
-  // Require users to verify email addresses before they can use password authentication.
+  // Keep email/password registration and sign-in available without verification for now.
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
   },
   // Enable Google sign-in using credentials supplied through server-only environment variables.
   socialProviders: {

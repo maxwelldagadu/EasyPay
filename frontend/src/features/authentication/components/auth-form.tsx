@@ -50,10 +50,14 @@ export function AuthForm({ mode }: AuthFormProps) {
       });
       // Surface the provider's failure instead of presenting a false successful registration.
       if (result.error) {
+        if (result.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
+          setStatus("An account with this email already exists. Please sign in instead.");
+          return;
+        }
         setStatus(result.error.message ?? "Registration failed");
         return;
       }
-      setStatus("Account created. Check your email to verify your address.");
+      setStatus("Account created. Please sign in to your account.");
       return;
     }
 
