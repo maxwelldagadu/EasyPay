@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1.router import api_router
+from app.api.user_authentication.router import api_router
 from app.core.config import settings
 from app.database.session import dispose_database
 
@@ -17,8 +17,6 @@ async def lifespan(app: FastAPI):
 
 # Configure the API once with its environment-specific metadata and resource lifecycle.
 app = FastAPI(
-    title=settings.app_name,
-    version="0.1.0",
     description="Backend foundation for the EasyPay testnet USDC payment platform.",
     lifespan=lifespan,
 )
@@ -32,8 +30,8 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 
-# Mount all versioned endpoints under one stable API prefix.
-app.include_router(api_router, prefix="/api/v1")
+# Mount all app feature/functionality endpoints under one stable API prefix.
+app.include_router(api_router, prefix="/user_auth")
 
 
 @app.get("/health", tags=["system"])

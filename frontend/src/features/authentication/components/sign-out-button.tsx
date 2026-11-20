@@ -20,10 +20,10 @@ export function SignOutButton() {
       if (result.error) {
         setError(
           result.error.message?.trim() ||
-            `Sign-out failed (HTTP ${result.error.status}: ${result.error.statusText}).`,
+            `Sign-out failed.`,
         );
         return;
-      }
+      } 
 
       router.replace("/login");
       router.refresh();

@@ -11,12 +11,11 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "EasyPay"
-    app_env: str = "development"
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/easypay"
+    # This loads all our environment variables and validate them at startup, so we can fail fast if any are missing or malformed.
+    database_url: str = ""
     frontend_origin: str = "http://localhost:3000"
     better_auth_url: str = "http://localhost:3000"
-    better_auth_secret: str = ""
+    better_auth_secret: str = "" 
 
     @property
     def cors_origins(self) -> list[str]:

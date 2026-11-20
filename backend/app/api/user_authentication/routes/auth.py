@@ -3,11 +3,11 @@ from fastapi import APIRouter
 from app.authentication.dependencies import CurrentSession
 
 # Group endpoints that expose authenticated identity information.
-router = APIRouter(prefix="/auth", tags=["authentication"])
+router = APIRouter(tags=["authentication"])
 
 
 @router.get("/session")
-async def session(current_session: CurrentSession):
+async def session(current_session: CurrentSession) -> dict[str, dict[str, object]]:
     # Return the minimum UI identity and session fields without relaying credentials or provider internals.
     return {
         "session": {
