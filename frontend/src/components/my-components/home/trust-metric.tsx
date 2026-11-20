@@ -26,21 +26,21 @@ const cardContent = [
     title: "No movement without:",
     italic: "your explicit PIN.",
     description:
-      "Every payment waits for the agent's unique four-digit PIN. Verification is backend-only, transaction-bound, and never visible to the AI.",
+      "Every payment waits for the agent's unique four-digit PIN. Verification is backend-only, transaction-bound and never visible to the AI.",
   },
   {
     eyebrow: "USDC testnet wallet",
     title: "Move test tokens:",
     italic: "only on supported networks.",
     description:
-      "Connect a MetaMask wallet, verify the testnet, and keep USDC balances visible. ETH is reserved for gas and can never be used as a payment asset.",
+      "Connect a MetaMask wallet, verify the testnet and keep USDC balances visible.",
   },
   {
     eyebrow: "Conversational intelligence",
     title: "Ask. Review.",
     italic: "Nothing moves by itself.",
     description:
-      "Your agent translates natural language into a structured proposal, while deterministic controls validate balances, budgets, recipients, and risk.",
+      "Your agent translates natural language into a structured proposal, while deterministic controls validate balances, budgets, recipients and risk.",
   },
 ] as const;
 
@@ -67,14 +67,19 @@ export default function TrustMetric() {
   const sectionRef = useRef<HTMLElement>(null);
   const pinnedRef = useRef<HTMLDivElement>(null);
   const [activeCard, setActiveCard] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [pinEnabled, setPinEnabled] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePreference = () => setReduceMotion(mediaQuery.matches);
-    updatePreference();
-    mediaQuery.addEventListener("change", updatePreference);
-    return () => mediaQuery.removeEventListener("change", updatePreference);
+    const viewportQuery = window.matchMedia("(min-width: 1200px) and (min-height: 760px)");
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateLayout = () => setPinEnabled(viewportQuery.matches && !motionQuery.matches);
+    updateLayout();
+    viewportQuery.addEventListener("change", updateLayout);
+    motionQuery.addEventListener("change", updateLayout);
+    return () => {
+      viewportQuery.removeEventListener("change", updateLayout);
+      motionQuery.removeEventListener("change", updateLayout);
+    };
   }, []);
 
   useEffect(() => {
@@ -82,21 +87,12 @@ export default function TrustMetric() {
     const pinned = pinnedRef.current;
     if (!section) return;
 
-    if (reduceMotion) {
-      const trigger = ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (instance) => {
-          setActiveCard(Math.min(3, Math.round(instance.progress * 3)));
-        },
-      });
-      return () => trigger.kill();
+    if (!pinEnabled || !pinned) {
+      setActiveCard(0);
+      return;
     }
 
-    if (!pinned) return;
-
-    // Pin the feature once and use one scrubbed timeline for the four-card sequence.
+    // Pin only large, motion-enabled viewports; smaller screens show every card in normal flow.
     const context = gsap.context(() => {
       const cards = gsap.utils.toArray<HTMLElement>("[data-story-card]");
       const heading = pinned.querySelector("[data-trust-heading]");
@@ -185,7 +181,7 @@ export default function TrustMetric() {
     }, pinned);
 
     return () => context.revert();
-  }, [reduceMotion]);
+  }, [pinEnabled]);
 
   const current = cardContent[activeCard];
   const activeStyle = cardStyles[activeCard];
@@ -194,10 +190,17 @@ export default function TrustMetric() {
     <section
       ref={sectionRef}
       aria-labelledby="trust-metric-heading"
-      className="relative h-[400svh] bg-[#10120f] text-[#f3f1e8]"
+      className={`relative bg-[#10120f] text-[#f3f1e8] ${
+        pinEnabled ? "h-[400svh]" : "h-auto"
+      }`}
       id="trust-metric"
     >
-      <div ref={pinnedRef} className="relative isolate h-svh overflow-hidden">
+      <div
+        ref={pinnedRef}
+        className={`relative isolate ${
+          pinEnabled ? "h-svh overflow-hidden" : "min-h-svh overflow-visible"
+        }`}
+      >
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-36 -top-40 -z-10 size-[34rem] rounded-full border border-neon-purple/[0.09]"
@@ -215,10 +218,18 @@ export default function TrustMetric() {
           className="pointer-events-none absolute -bottom-48 -left-40 -z-10 size-[32rem] rounded-full bg-neon-magenta/15 blur-[100px]"
         />
 
-        <div className="mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-5 py-10 sm:px-8 lg:px-12">
-          <div className="grid items-center gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
+        <div
+          className={`mx-auto flex w-full max-w-7xl flex-col justify-center gap-7 px-5 py-12 sm:px-8 sm:py-16 lg:mx-0 lg:max-w-none lg:px-12 ${
+            pinEnabled ? "h-full" : "min-h-svh"
+          }`}
+        >
+          <div
+            className={`grid items-center gap-8 ${
+              pinEnabled ? "lg:grid-cols-[0.88fr_1.12fr] lg:gap-16" : ""
+            }`}
+          >
             <div
-              className="relative z-20 hidden lg:block"
+              className="relative z-20 lg:block"
               data-trust-heading
             >
               <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-neon-purple">
@@ -226,7 +237,7 @@ export default function TrustMetric() {
                 {current.eyebrow}
               </p>
               <h2
-                className="mt-6 max-w-xl text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-6xl lg:text-7xl"
+                className="mt-6 max-w-xl text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-6xl lg:max-w-2xl lg:text-[5rem]"
                 id="trust-metric-heading"
               >
                 {current.title}
@@ -235,53 +246,64 @@ export default function TrustMetric() {
                   {current.italic}
                 </span>
               </h2>
-              <p className="mt-6 max-w-lg text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
+              <p className="mt-6 max-w-lg text-base leading-7 text-white/65 sm:text-lg sm:leading-8 lg:text-xl">
                 {current.description}
               </p>
 
-              <div className="mt-9 flex gap-2" aria-label={`Card ${activeCard + 1} of 4`}>
-                {[0, 1, 2, 3].map((index) => (
-                  <span
-                    className="relative h-1 w-12 overflow-hidden rounded-full bg-white/15"
-                    key={index}
-                  >
+              {pinEnabled && (
+                <div className="mt-9 flex gap-2" aria-label={`Card ${activeCard + 1} of 4`}>
+                  {[0, 1, 2, 3].map((index) => (
                     <span
-                      className="absolute inset-0 origin-left rounded-full transition-transform duration-500"
-                      data-card-progress
-                      style={{
-                        backgroundColor: activeStyle.accent,
-                        transform: `scaleX(${index === activeCard ? 1 : 0})`,
-                      }}
-                    />
-                  </span>
-                ))}
-              </div>
+                      className="relative h-1 w-12 overflow-hidden rounded-full bg-white/15"
+                      key={index}
+                    >
+                      <span
+                        className="absolute inset-0 origin-left rounded-full transition-transform duration-500"
+                        data-card-progress
+                        style={{
+                          backgroundColor: activeStyle.accent,
+                          transform: `scaleX(${index === activeCard ? 1 : 0})`,
+                        }}
+                      />
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="relative mx-auto h-[410px] w-full max-w-[620px] sm:h-[520px]" data-story-stage>
-              <div
-                aria-hidden="true"
-                className="absolute -inset-4 rotate-[-5deg] rounded-[2rem] border border-neon-magenta/25 bg-[#21182b]/80 shadow-xl shadow-black/25 sm:-inset-5"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute -inset-2 rotate-[3deg] rounded-[2rem] border border-white/10 bg-[#191520]/90 shadow-xl shadow-black/25"
-              />
+            <div
+              className={`relative w-full ${
+                pinEnabled
+                  ? "h-[min(560px,60svh)] min-h-[380px] max-w-[680px]"
+                  : "grid grid-cols-1 gap-5 sm:grid-cols-2"
+              }`}
+              data-story-stage
+            >
+              {pinEnabled && (
+                <>
+                  <div
+                    aria-hidden="true"
+                    className="absolute -inset-4 rotate-[-5deg] rounded-[2rem] border border-neon-magenta/25 bg-[#21182b]/80 shadow-xl shadow-black/25 sm:-inset-5"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute -inset-2 rotate-[3deg] rounded-[2rem] border border-white/10 bg-[#191520]/90 shadow-xl shadow-black/25"
+                  />
+                </>
+              )}
               {[0, 1, 2, 3].map((index) => (
                 <article
-                  aria-hidden={index !== activeCard && !reduceMotion}
-                  className={`absolute inset-0 origin-center ${
-                    reduceMotion
-                      ? index === activeCard
-                        ? "opacity-100"
-                        : "opacity-0"
-                      : ""
+                  aria-hidden={pinEnabled && index !== activeCard}
+                  className={`${
+                    pinEnabled ? "absolute inset-0 origin-center" : "relative min-h-[320px]"
                   }`}
                   data-story-card
                   key={index}
                 >
                   <div
-                    className={`relative h-full overflow-hidden rounded-[1.75rem] border p-5 text-white sm:rounded-[2rem] sm:p-8 ${cardStyles[index].shell}`}
+                    className={`relative ${
+                      pinEnabled ? "h-full overflow-hidden" : "min-h-[320px]"
+                    } rounded-[1.75rem] border p-5 text-white sm:rounded-[2rem] sm:p-8 ${cardStyles[index].shell}`}
                   >
                     {index === 0 && <SpendingCard />}
                     {index === 1 && <ApprovalCard />}
@@ -293,21 +315,24 @@ export default function TrustMetric() {
             </div>
           </div>
 
-          <div className="mt-7 hidden flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/45 lg:flex">
-            <span>Independent budgets</span>
-            <span className="size-1 rounded-full bg-neon-purple/70" />
-            <span>Deterministic backend checks</span>
-            <span className="size-1 rounded-full bg-neon-magenta/70" />
-            <span>Pause any agent instantly</span>
+          <div className="grid gap-3 border-t border-white/10 pt-5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/45 sm:grid-cols-3">
+            {[
+              "Independent budgets",
+              "Deterministic backend checks",
+              "Pause any agent instantly",
+            ].map((item, index) => (
+              <span className="flex items-center gap-2" key={item}>
+                <span
+                  className={`size-1 shrink-0 rounded-full ${
+                    index === 1 ? "bg-neon-magenta/70" : "bg-neon-purple/70"
+                  }`}
+                />
+                {item}
+              </span>
+            ))}
           </div>
         </div>
       </div>
-
-      {reduceMotion && (
-        <div className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-full bg-[#171910] px-4 py-2 text-xs text-white">
-          Card {activeCard + 1} of 4
-        </div>
-      )}
     </section>
   );
 }
@@ -447,7 +472,7 @@ function CardFrame({
         className="pointer-events-none absolute -right-5 -top-20 size-[19rem] rounded-full border border-white/[0.08]"
       />
       <div className="relative flex h-full flex-col">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <span
               className="grid size-11 shrink-0 place-items-center rounded-2xl shadow-lg shadow-black/15 sm:size-12"
@@ -456,12 +481,12 @@ function CardFrame({
               {icon}
             </span>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">{title}</p>
-              <p className="mt-1 truncate text-[10px] text-white/50 sm:text-xs">{subtitle}</p>
+              <p className="text-sm font-semibold">{title}</p>
+              <p className="mt-1 text-[10px] text-white/50 sm:text-xs">{subtitle}</p>
             </div>
           </div>
           <span
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] sm:px-3 sm:text-[10px]"
+            className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] lg:self-auto sm:px-3 sm:text-[10px]"
             style={{
               borderColor: `color-mix(in srgb, ${accent} 30%, transparent)`,
               backgroundColor: `color-mix(in srgb, ${accent} 10%, transparent)`,

@@ -30,9 +30,9 @@ export default function Hero(){
             initial={reduceMotion ? false : { opacity: 0, y: 14 }}
             animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.55 }}
-            className="mb-10 mt-10 inline-flex md:text-lg items-center gap-2 rounded-full border  border-white/10 bg-neon-purple px-3.5 py-2 text-xs font-medium"
+            className="mb-10 mt-10 inline-flex md:text-sm  items-center gap-2 rounded-full border  border-white/10 bg-neon-purple px-3.5 py-2 text-xs font-medium"
           >
-            <span className="size-1.5 rounded-full font-semibold bg-white shadow-[0_0_12px_#dfff78]" />
+            <span className="size-1.5 rounded-full font-bold bg-white shadow-[0_0_12px_#dfff78]" />
             AI payment platform
           </motion.div>
           <motion.h1
@@ -53,7 +53,7 @@ export default function Hero(){
             initial={reduceMotion ? false : { opacity: 0, y: 18 }}
             animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.18 }}
-            className="mt-7 max-w-lg text-sm leading-7 text-white/50 sm:text-lg sm:leading-8 "
+            className="mt-7 max-w-lg text-s leading-7 text-white/50 sm:text-lg sm:leading-8 "
           >
             Create named AI agents that understand payment instructions, follows the limits you set,
             and wait for your approval before any USDC moves.
@@ -66,7 +66,7 @@ export default function Hero(){
           >
             <Link
               className="group text-nowrap inline-flex items-center gap-3 rounded-full bg-neon-purple
-                         p-3 md:px-6 md:py-3.5 text-[13px] md:text-lg font-semibold text-white"
+                         p-3 md:px-6 md:py-3.5 text-[11px] md:text-sm font-bold text-white"
               href="/register"
             >
               Create your first agent
@@ -75,8 +75,8 @@ export default function Hero(){
               initial={reduceMotion ? false : { opacity: 0, y: 16 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.32 }}
-              className="rounded-xl border border-white/50 bg-black/30 p-1.5 md:p-3.5 text-right shadow-xl 
-                        shadow-black/20 backdrop-blur-md md:text-lg text[13px] sm:block lg:bottom-12 lg:right-12 text-nowrap "
+              className="rounded-xl border text-xs border-white/50 bg-black/30 p-1.5 md:p-3.5 text-right shadow-xl 
+                        shadow-black/20 backdrop-blur-md md:text-sm  text[13px] sm:block lg:bottom-12 lg:right-12 text-nowrap "
             >
               <p className="text-[10px] uppercase tracking-[0.16em]  text-white/50">Approval security</p>
               <p className="mt-1 font-medium">One Agent · one PIN</p>
