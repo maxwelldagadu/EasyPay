@@ -140,7 +140,14 @@ export function AuthForm({ mode }: AuthFormProps) {
            focus-visible:outline-neon-magenta disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
           type="submit"
           disabled={form.formState.isSubmitting}
+          aria-busy={form.formState.isSubmitting}
         >
+          {form.formState.isSubmitting && (
+            <span
+              aria-hidden="true"
+              className="mr-2 inline-block size-4 animate-spin rounded-full border-2 border-current border-t-transparent align-middle"
+            />
+          )}
           {isRegister ? "Create account" : "Sign in"}
         </button>
       </form>

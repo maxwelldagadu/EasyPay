@@ -44,6 +44,7 @@ export function SignOutButton() {
         type="button"
         onClick={handleSignOut}
         disabled={isSigningOut}
+        aria-busy={isSigningOut}
       >
         {isSigningOut ? "Signing out..." : "Sign out"}
       </button>
