@@ -10,7 +10,8 @@ from app.models import Base
 
 # Bind Alembic to the same configured database and model metadata as the application.
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.database_url)
+# Escape percent signs because ConfigParser interpolation otherwise corrupts encoded credentials.
+config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -48,6 +49,8 @@ async def run_async_migrations() -> None:
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        # Match the API engine so migrations remain compatible with Supabase transaction pooling.
+        connect_args={"statement_cache_size": 0},
     )
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

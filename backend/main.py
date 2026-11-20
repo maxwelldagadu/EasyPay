@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.user_authentication.router import api_router
+from app.api.v1.router import api_v1_router
 from app.core.config import settings
 from app.database.session import dispose_database
 
@@ -30,8 +31,9 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 
-# Mount all app feature/functionality endpoints under one stable API prefix.
+# Keep the existing identity endpoint stable and mount product features under a versioned API path.
 app.include_router(api_router, prefix="/user_auth")
+app.include_router(api_v1_router, prefix="/api/v1")
 
 
 @app.get("/health", tags=["system"])

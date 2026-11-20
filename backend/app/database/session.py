@@ -9,6 +9,8 @@ from app.core.config import settings
 engine = create_async_engine(
     settings.database_url,
     pool_pre_ping=True,
+    # Supabase transaction poolers can reuse server connections; disable asyncpg's named statement cache.
+    connect_args={"statement_cache_size": 0},
 )
 SessionLocal = async_sessionmaker(
     bind=engine,
