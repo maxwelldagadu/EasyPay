@@ -16,11 +16,11 @@ export function DashboardPageHeading({
 }: DashboardPageHeadingProps) {
   return (
     <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-      <div>
+      <div className="min-w-0">
         <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-neon-magenta">
           {eyebrow}
         </p>
-        <h1 className="mt-2 font-google-sans text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <h1 className="mt-2 break-words font-google-sans text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           {title}
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">{description}</p>

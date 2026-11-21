@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
 
+import { DashboardMobileMenu } from "@/components/my-components/dashboard/navigation/dashboard-mobile-menu";
 import { DashboardNotifications } from "@/components/my-components/dashboard/navigation/dashboard-notifications";
 import { DashboardSignOutButton } from "@/components/my-components/dashboard/navigation/dashboard-sign-out-button";
 
@@ -32,7 +32,10 @@ export function DashboardTopbar({ userName }: DashboardTopbarProps) {
               {userName}
             </p>
           </div>
-          <DashboardSignOutButton />
+          <DashboardMobileMenu />
+          <div className="hidden lg:block">
+            <DashboardSignOutButton />
+          </div>
         </div>
       </div>
     </header>

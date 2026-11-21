@@ -47,13 +47,13 @@ export function AgentCard({ agent }: { agent: Agent }) {
         {agent.description || "No description added yet."}
       </p>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
+      <div className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] p-3.5">
           <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide text-white/40">
             <WalletCards aria-hidden="true" className="size-3.5 text-neon-magenta" />
             Total budget
           </div>
-          <p className="mt-2 font-google-sans text-lg font-semibold text-white">
+          <p className="mt-2 break-all font-google-sans text-base font-semibold text-white sm:text-lg">
             {formatUsdc(agent.budget_usdc)} <span className="text-xs font-medium text-white/45">USDC</span>
           </p>
         </div>
@@ -62,7 +62,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
             <ShieldCheck aria-hidden="true" className="size-3.5 text-neon-magenta" />
             Max transaction
           </div>
-          <p className="mt-2 font-google-sans text-lg font-semibold text-white">
+          <p className="mt-2 break-all font-google-sans text-base font-semibold text-white sm:text-lg">
             {formatUsdc(agent.max_transaction_usdc)} <span className="text-xs font-medium text-white/45">USDC</span>
           </p>
         </div>
