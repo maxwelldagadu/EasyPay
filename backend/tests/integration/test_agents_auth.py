@@ -40,3 +40,13 @@ def test_agent_conversation_rejects_unauthenticated_requests():
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Authentication required"
+
+
+def test_phase4_financial_routes_are_mounted_under_v1():
+    # Verify balance and approval endpoints are registered before they can be called by the frontend.
+    paths = app.openapi()["paths"]
+
+    assert "/api/v1/financial/balance" in paths
+    assert "/api/v1/financial/approvals" in paths
+    assert "/api/v1/financial/approvals/{approval_id}/approve" in paths
+    assert "/api/v1/financial/approvals/{approval_id}/reject" in paths

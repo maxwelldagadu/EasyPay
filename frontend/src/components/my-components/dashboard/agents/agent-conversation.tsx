@@ -19,6 +19,7 @@ import {
   loadAgentConversationAction,
   sendAgentConversationMessageAction,
 } from "@/server-actions/agents/conversation-actions";
+import { createPaymentApprovalAction } from "@/server-actions/approvals/actions";
 
 const fieldLabels: Record<keyof AgentConfigurationSnapshot, string> = {
   name: "Agent name",
@@ -47,9 +48,33 @@ function displayConfigurationValue(value: unknown): string {
   return String(value);
 }
 
-function PaymentProposalCard({ proposal }: { proposal: PaymentProposal }) {
+function PaymentProposalCard({
+  agentId,
+  proposal,
+}: {
+  agentId: string;
+  proposal: PaymentProposal;
+}) {
   // Present server-checked fields separately from warnings and never imply payment authorization.
   const isBlocked = proposal.status === "blocked";
+  const [isCreating, startCreating] = useTransition();
+  const [creationError, setCreationError] = useState<string | null>(null);
+  const [created, setCreated] = useState(false);
+
+  function createApproval() {
+    if (!proposal.amount_usdc || !proposal.recipient_address) return;
+    setCreationError(null);
+    startCreating(async () => {
+      const result = await createPaymentApprovalAction({
+        agentId,
+        amountUsdc: proposal.amount_usdc as string,
+        recipientAddress: proposal.recipient_address as string,
+        originalInstruction: "Create a USDC testnet payment approval",
+      });
+      if (result.ok) setCreated(true);
+      else setCreationError(result.message);
+    });
+  }
   return (
     <section className="mt-4 rounded-xl border border-white/[0.08] bg-[#10120f]/80 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -106,6 +131,19 @@ function PaymentProposalCard({ proposal }: { proposal: PaymentProposal }) {
           {warning}
         </p>
       ))}
+      {!isBlocked && proposal.status !== "incomplete" && (
+        <div className="mt-4">
+          <button
+            className="inline-flex min-h-10 items-center rounded-lg bg-neon-purple px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
+            disabled={isCreating || created}
+            onClick={createApproval}
+            type="button"
+          >
+            {isCreating ? "Creating approval..." : created ? "Approval request created" : "Create approval request"}
+          </button>
+          {creationError && <p className="mt-2 text-xs text-red-200" role="alert">{creationError}</p>}
+        </div>
+      )}
     </section>
   );
 }
@@ -407,7 +445,7 @@ export function AgentConversation({
                   <p className="whitespace-pre-wrap break-words">{message.content}</p>
                 </div>
                 {message.proposal?.type === "payment" && (
-                  <PaymentProposalCard proposal={message.proposal} />
+                  <PaymentProposalCard agentId={agentId} proposal={message.proposal} />
                 )}
                 {message.proposal?.type === "configuration" && (
                   <ConfigurationProposalCard
