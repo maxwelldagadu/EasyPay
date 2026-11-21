@@ -3,6 +3,8 @@
 import { Bot, Check, LoaderCircle, Send, X } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 import type {
   ConfigurationProposal,
   ConversationMessage,
@@ -400,10 +402,21 @@ export function AgentConversation({
         role="log"
       >
         {isLoading ? (
-          <p className="flex items-center gap-2 py-4 text-sm text-white/45">
-            <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
-            Loading conversation...
-          </p>
+          <div aria-label="Loading conversation" className="space-y-4 py-2" role="status">
+            {[0, 1, 2].map((item) => (
+              <div
+                className={`flex ${item === 1 ? "justify-end" : "justify-start"}`}
+                key={item}
+              >
+                <div className="w-full max-w-[88%] space-y-2">
+                  <Skeleton className={`h-4 ${item === 1 ? "w-3/4 ml-auto" : "w-2/3"}`} />
+                  <Skeleton className={`h-4 ${item === 1 ? "w-1/2 ml-auto" : "w-full"}`} />
+                  {item === 2 && <Skeleton className="h-24 w-full rounded-xl" />}
+                </div>
+              </div>
+            ))}
+            <span className="sr-only">Loading conversation</span>
+          </div>
         ) : messages.length === 0 ? (
           <div className="rounded-xl border border-dashed border-white/10 px-4 py-6 text-center">
             <p className="text-sm font-medium text-white/75">Start with a request for {currentConfiguration.name}</p>
