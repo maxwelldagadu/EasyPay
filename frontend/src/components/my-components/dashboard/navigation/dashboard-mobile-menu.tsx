@@ -22,7 +22,9 @@ export function DashboardMobileMenu() {
         aria-controls="dashboard-mobile-navigation"
         aria-expanded={isOpen}
         aria-label={isOpen ? "Close dashboard menu" : "Open dashboard menu"}
-        className="grid size-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.025] text-white/70 transition-colors hover:border-neon-purple/35 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-magenta"
+        className="grid size-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.025]
+                   text-white/70 transition-colors hover:border-neon-purple/35 hover:text-white 
+                   focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-magenta"
         onClick={() => setIsOpen((open) => !open)}
         type="button"
       >
@@ -35,7 +37,9 @@ export function DashboardMobileMenu() {
 
       <nav
         aria-label="Dashboard"
-        className={`fixed inset-x-3 top-[84px] z-50 max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-2xl border border-white/10 bg-[#17121f] p-3 shadow-2xl shadow-black/50 sm:inset-x-7 ${
+        className={`fixed inset-x-3 top-[84px] z-50 max-h-[calc(100dvh-6rem)] 
+                  overflow-y-auto rounded-2xl border border-white/10 
+                  bg-[#17121f] p-3 shadow-2xl shadow-black/50 sm:inset-x-7 ${
           isOpen ? "" : "hidden"
         }`}
         id="dashboard-mobile-navigation"

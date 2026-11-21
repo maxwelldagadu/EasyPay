@@ -12,12 +12,15 @@ export function AgentList({ agents }: { agents: Agent[] }) {
         <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-neon-purple/15 text-neon-magenta">
           <Bot aria-hidden="true" className="size-7" />
         </span>
-        <h2 className="mt-5 text-lg font-semibold text-white">Create your first payment agent</h2>
+        <h2 className="mt-5 text-lg font-semibold text-white">
+          Create your first payment agent
+        </h2>
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/45">
           Give an agent a clear responsibility, set its USDC boundaries, and choose its own approval PIN.
         </p>
         <Link
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-neon-purple px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-neon-magenta"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-neon-purple 
+                    px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-neon-magenta"
           href="/agents/new"
         >
           <Plus aria-hidden="true" className="size-4" />

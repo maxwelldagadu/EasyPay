@@ -65,7 +65,7 @@ export default async function AgentDetailPage({
             </p>
             <p className="mt-2 flex items-center gap-1.5 text-xs text-white/40">
               <ShieldCheck aria-hidden="true" className="size-3.5 text-neon-magenta" />
-              Approval PIN stored as a server-side hash
+              Approval PIN finalizes transactions.
             </p>
           </div>
         </div>

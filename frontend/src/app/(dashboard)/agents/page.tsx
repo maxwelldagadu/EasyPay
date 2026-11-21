@@ -33,7 +33,7 @@ export default async function AgentsPage() {
         <section className="rounded-2xl border border-red-300/15 bg-red-500/[0.06] p-6">
           <h2 className="font-semibold text-white">Could not load agents</h2>
           <p className="mt-2 text-sm text-red-100/75">{result.error ?? "The agent service returned no data."}</p>
-          <p className="mt-2 text-xs text-white/40">Your agent settings were not changed. Try again after checking the backend.</p>
+          <p className="mt-2 text-xs text-white/40">Your agent settings were not changed</p>
         </section>
       ) : (
         <AgentList agents={result.data} />

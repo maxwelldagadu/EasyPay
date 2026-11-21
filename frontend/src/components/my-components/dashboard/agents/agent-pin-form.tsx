@@ -42,7 +42,7 @@ export function AgentPinForm({ agentId }: { agentId: string }) {
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-neon-magenta">Step-up verification</p>
         <h2 className="mt-2 text-lg font-semibold text-white">Change approval PIN</h2>
         <p className="mt-1 text-sm leading-6 text-white/45">
-          Verify the current PIN before replacing it. The new PIN is never returned by the API.
+          Verify the current PIN before replacing it
         </p>
       </div>
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
