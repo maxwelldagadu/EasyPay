@@ -60,7 +60,8 @@ export function AgentStatusControls({
       <div className="flex flex-wrap gap-2">
         <button
           aria-busy={isPending}
-          className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-white/70
+                    transition-colors hover:bg-white/[0.05] hover:text-white disabled:opacity-50"
           disabled={isPending}
           onClick={() => updateStatus(!isActive)}
           type="button"
@@ -70,7 +71,9 @@ export function AgentStatusControls({
         </button>
         <button
           aria-busy={isPending}
-          className="inline-flex items-center gap-2 rounded-xl border border-red-300/15 px-4 py-2.5 text-sm font-semibold text-red-200/80 transition-colors hover:border-red-300/35 hover:bg-red-400/[0.07] hover:text-red-100 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-red-300/15 px-4 py-2.5 text-sm
+                    font-semibold text-red-200/80 transition-colors hover:border-red-300/35 hover:bg-red-400/[0.07]
+                   hover:text-red-100 disabled:opacity-50"
           disabled={isPending}
           onClick={requestDelete}
           type="button"

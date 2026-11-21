@@ -2,10 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import type { Agent } from "@/features/agents/types";
+import {
+  type AgentConfigurationSnapshot,
+  useAgentConfigurationStore,
+} from "@/stores/agents/agent-configuration-store";
 import {
   agentFormSchema,
   createAgentFormSchema,
@@ -24,7 +28,7 @@ interface AgentFormProps {
 const fieldClassName =
   "mt-2 w-full rounded-xl border border-white/10 bg-[#10120f] px-3.5 py-3 text-sm text-[#f3f1e8] outline-none transition-colors placeholder:text-white/25 focus:border-neon-purple focus:ring-2 focus:ring-neon-purple/25";
 
-function agentDefaults(agent?: Agent): AgentFormValues {
+function agentDefaults(agent?: AgentConfigurationSnapshot): AgentFormValues {
   // Keep decimal values as strings so editing does not introduce floating-point rounding.
   return {
     name: agent?.name ?? "",
@@ -68,10 +72,31 @@ export function AgentForm({ agent }: AgentFormProps) {
   const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null);
   const [approvalPin, setApprovalPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
+  const storedConfiguration = useAgentConfigurationStore((state) =>
+    agent ? state.configurationsByAgent[agent.id] : undefined,
+  );
+  const initializeAgentConfiguration = useAgentConfigurationStore(
+    (state) => state.initializeAgentConfiguration,
+  );
+  const currentConfiguration = storedConfiguration ?? agent;
   const form = useForm<AgentFormValues>({
     resolver: zodResolver(agentFormSchema),
-    defaultValues: agentDefaults(agent),
+    defaultValues: agentDefaults(currentConfiguration),
   });
+  const { reset } = form;
+
+  useEffect(() => {
+    if (agent) initializeAgentConfiguration(agent);
+  }, [agent, initializeAgentConfiguration]);
+
+  useEffect(() => {
+    if (currentConfiguration) {
+      reset(agentDefaults(currentConfiguration), { keepDirtyValues: true });
+    }
+  }, [currentConfiguration, reset]);
+
+  // Subscribe to dirty fields because React Hook Form uses that subscription to preserve edits on reset.
+  void form.formState.dirtyFields;
 
   function submitConfiguration(values: AgentFormValues) {
     // Validate creation-only PINs before invoking the server action; the server repeats every check.

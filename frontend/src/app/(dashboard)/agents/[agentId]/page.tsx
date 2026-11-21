@@ -3,6 +3,7 @@ import { ArrowLeft, Bot, CalendarDays, ListOrdered, ShieldCheck } from "lucide-r
 import { notFound } from "next/navigation";
 
 import { AgentForm } from "@/components/my-components/dashboard/agents/agent-form";
+import { AgentConversation } from "@/components/my-components/dashboard/agents/agent-conversation";
 import { AgentPinForm } from "@/components/my-components/dashboard/agents/agent-pin-form";
 import { AgentStatusControls } from "@/components/my-components/dashboard/agents/agent-status-controls";
 import { DashboardPageHeading } from "@/components/my-components/dashboard/shared/dashboard-page-heading";
@@ -79,6 +80,8 @@ export default async function AgentDetailPage({
           {agent.is_active ? "Active" : "Paused"}
         </span>
       </section>
+
+      <AgentConversation agent={agent} />
 
       <div className="space-y-7">
         <AgentForm agent={agent} />

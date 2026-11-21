@@ -1,3 +1,6 @@
+import pytest
+from pydantic import ValidationError
+
 from app.core.config import Settings
 
 
@@ -10,3 +13,9 @@ def test_cors_origins_are_normalized():
         "http://localhost:3000",
         "https://app.example.com",
     ]
+
+
+def test_ethereum_network_setting_rejects_mainnet():
+    # Prevent deployments from configuring Phase 3 proposals against a real-money network.
+    with pytest.raises(ValidationError, match="must identify a testnet"):
+        Settings(ethereum_testnet_name="Ethereum Mainnet")

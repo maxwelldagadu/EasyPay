@@ -147,3 +147,25 @@
     @apply cursor-pointer;
   }
 }
+
+.agent-conversation-scroll {
+  scrollbar-color: rgb(115 19 255 / 80%) transparent;
+  scrollbar-width: thin;
+}
+
+.agent-conversation-scroll::-webkit-scrollbar {
+  background: transparent;
+  width: 0.5rem;
+}
+
+.agent-conversation-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.agent-conversation-scroll::-webkit-scrollbar-thumb {
+  background: rgb(115 19 255 / 80%);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+}
