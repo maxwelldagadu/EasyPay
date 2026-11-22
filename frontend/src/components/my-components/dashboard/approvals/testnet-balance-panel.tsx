@@ -30,7 +30,8 @@ export function TestnetBalancePanel({
           {balance?.balance_usdc ?? "0"} USDC
         </p>
         <p className="mt-1 text-xs text-white/45">
-          Balance is validated on the backend. This manual source is temporary until Phase 5 wallet synchronization.
+          USDC testnet balance. Connect your wallet on the Wallet page to view
+          live on-chain balances.
         </p>
       </div>
       <div className="flex gap-2">
