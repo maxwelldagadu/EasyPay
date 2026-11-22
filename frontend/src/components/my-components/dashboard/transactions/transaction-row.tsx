@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import type { ReactNode } from "react";
 
 interface TransactionRowProps {
   tx: {
@@ -19,22 +20,22 @@ interface TransactionRowProps {
 
 // Renders a single on-chain transaction row with status styling and truncation.
 export function TransactionRow({ tx }: TransactionRowProps) {
-  const statusColor = {
+  const statusColors: Record<string, string> = {
     pending: "text-neon-purple",
     submitted: "text-neon-purple",
     confirmed: "text-emerald-400",
     failed: "text-red-400",
     rejected: "text-red-400",
-  }[tx.status as keyof typeof statusColor] || "text-white/45";
+  };
 
-  const statusIcon = {
+  const statusIcons: Record<string, ReactNode> = {
     confirmed: <CheckCircle2 className="size-4 text-emerald-400" />,
     failed: <AlertCircle className="size-4 text-red-400" />,
     rejected: <AlertCircle className="size-4 text-red-400" />,
-  }[tx.status as keyof typeof statusIcon] || (
-    <Clock className="size-4 text-white/45" />
-  );
+  };
 
+  const statusColor = statusColors[tx.status] ?? "text-white/45";
+  const statusIcon = statusIcons[tx.status] ?? <Clock className="size-4 text-white/45" />;
   const shortHash = tx.tx_hash
     ? `${tx.tx_hash.slice(0, 6)}…${tx.tx_hash.slice(-4)}`
     : "—";

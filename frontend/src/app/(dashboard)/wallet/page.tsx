@@ -1,25 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAccount, useChainId, useWalletClient } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { sepolia } from "wagmi/chains";
 
 import { DashboardPageHeading } from "@/components/my-components/dashboard/shared/dashboard-page-heading";
 import { WalletConnectButton } from "@/components/my-components/dashboard/wallet/wallet-connect-button";
 import { WalletBalance } from "@/components/my-components/dashboard/wallet/wallet-balance";
 import { WalletCard } from "@/components/my-components/dashboard/wallet/wallet-card";
+import { WagmiProviderWrapper } from "@/components/wagmi-provider";
 import { useWalletStore } from "@/stores/wallet/wallet-store";
 import { saveWalletAddressAction } from "@/features/wallet/services/wallet-service";
 
-export const instant = false;
-
 export default function WalletPage() {
+  return (
+    <WagmiProviderWrapper>
+      <WalletPageContent />
+    </WagmiProviderWrapper>
+  );
+}
+
+function WalletPageContent() {
   const { address, isConnecting, status } = useAccount();
   const chainId = useChainId();
-  const { data: walletClient } = useWalletClient();
-  const { isConnected, setConnection, setBalance } = useWalletStore();
-  const [isSaving, setIsSaving] = useState(false);
+  const setConnection = useWalletStore((state) => state.setConnection);
   const [copied, setCopied] = useState(false);
+  const [walletSaveError, setWalletSaveError] = useState<string | null>(null);
 
   const isWalletConnected = status === "connected";
   const chainName = chainId === sepolia.id ? "Sepolia Testnet" : `Chain ${chainId}`;
@@ -34,19 +40,24 @@ export default function WalletPage() {
     });
   }, [address, isConnecting, isWalletConnected, chainId, chainName, setConnection]);
 
-  async function handleAddressSave(addr: string) {
-    setIsSaving(true);
-    try {
-      const result = await saveWalletAddressAction(addr);
-      if (result.ok) {
-        // Balance is read live from the backend on subsequent requests.
-      }
-    } catch {
-      // Error is surfaced by the action's return value; no silent failures.
-    } finally {
-      setIsSaving(false);
-    }
-  }
+  useEffect(() => {
+    if (!address) return;
+    let active = true;
+    saveWalletAddressAction(address)
+      .then((result) => {
+        if (!active) return;
+        setWalletSaveError(result.ok ? null : result.message);
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        setWalletSaveError(
+          error instanceof Error ? error.message : "Could not save the wallet address.",
+        );
+      });
+    return () => {
+      active = false;
+    };
+  }, [address]);
 
   return (
     <div className="mx-auto max-w-[1100px]">
@@ -62,7 +73,7 @@ export default function WalletPage() {
           isConnected={isWalletConnected}
           chainId={chainId}
           chainName={chainName}
-          onCopy={(addr) => {
+          onCopy={() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }}
@@ -70,15 +81,20 @@ export default function WalletPage() {
         />
         <WalletBalance
           address={address}
-          onAddressSave={handleAddressSave}
           className="lg:col-span-1 lg:row-span-1"
         />
       </div>
 
+      {walletSaveError && (
+        <p role="alert" className="mt-3 text-sm text-red-300">
+          Could not save wallet address: {walletSaveError}
+        </p>
+      )}
+
       <div className="mt-8 flex items-center gap-4">
         <WalletConnectButton
-          onConnect={() => {}}
           onDisconnect={() => {
+            setWalletSaveError(null);
             setConnection({
               address: null,
               isConnected: false,

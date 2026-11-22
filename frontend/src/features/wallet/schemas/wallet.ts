@@ -11,5 +11,9 @@ export const usdcAmountSchema = z
 
 export const chainIdSchema = z.number().int().positive();
 
+export const walletBalanceSchema = z.object({
+  balance_usdc: z.union([z.string(), z.number()]).transform(String),
+});
+
 export type WalletAddress = z.infer<typeof walletAddressSchema>;
 export type UsdcAmount = z.infer<typeof usdcAmountSchema>;

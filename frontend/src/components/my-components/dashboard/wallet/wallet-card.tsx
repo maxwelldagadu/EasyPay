@@ -1,13 +1,15 @@
 "use client";
 
 import { Copy, CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface WalletCardProps {
-  address: string | null;
+  address: string | null | undefined;
   isConnected: boolean;
   chainId: number | null;
   chainName: string | null;
   onCopy: (address: string) => void;
+  className?: string;
 }
 
 // Shows the active wallet address, network, and connection status.
@@ -18,17 +20,18 @@ export function WalletCard({
   chainId,
   chainName,
   onCopy,
+  className,
 }: WalletCardProps) {
   if (!isConnected || !address) {
     return (
-      <section className="rounded-3xl border border-dashed border-white/10 bg-[#17121f]/70 p-6 text-center">
+      <section className={cn("rounded-3xl border border-dashed border-white/10 bg-[#17121f]/70 p-6 text-center", className)}>
         <p className="text-sm text-white/45">No wallet connected</p>
       </section>
     );
   }
 
   return (
-    <section className="rounded-3xl border border-white/[0.08] bg-[#17121f] p-6">
+    <section className={cn("rounded-3xl border border-white/[0.08] bg-[#17121f] p-6", className)}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="size-8 rounded-xl bg-neon-purple/20 flex items-center justify-center">

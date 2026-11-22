@@ -12,7 +12,7 @@ export interface WalletConnectionState {
   balanceUsdc: string | null;
   nativeBalance: string | null;
   setConnection: (connection: Partial<WalletConnectionState>) => void;
-  setBalance: (balanceUsdc: string, nativeBalance: string) => void;
+  setBalance: (balanceUsdc: string, nativeBalance?: string) => void;
   disconnect: () => void;
 }
 
@@ -29,7 +29,10 @@ export const useWalletStore = create<WalletConnectionState>()(
       setConnection: (connection) =>
         set((state) => ({ ...state, ...connection })),
       setBalance: (balanceUsdc, nativeBalance) =>
-        set({ balanceUsdc, nativeBalance }),
+        set((state) => ({
+          balanceUsdc,
+          nativeBalance: nativeBalance ?? state.nativeBalance,
+        })),
       disconnect: () =>
         set({
           address: null,

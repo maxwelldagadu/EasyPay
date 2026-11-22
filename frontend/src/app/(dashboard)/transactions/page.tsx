@@ -6,27 +6,8 @@ import { List, RefreshCw } from "lucide-react";
 import { DashboardPageHeading } from "@/components/my-components/dashboard/shared/dashboard-page-heading";
 import { PageSkeleton } from "@/components/my-components/dashboard/transactions/page-skeleton";
 import { TransactionRow } from "@/components/my-components/dashboard/transactions/transaction-row";
-import { requestAgentApi } from "@/features/agents/services/server-api";
-import { z } from "zod";
-
-const transactionSchema = z.object({
-  id: z.string(),
-  agent_id: z.string(),
-  recipient_address: z.string(),
-  amount_usdc: z.union([z.string(), z.number()]).transform(String),
-  asset: z.string(),
-  network: z.string(),
-  status: z.string(),
-  tx_hash: z.string().nullable(),
-  created_at: z.string(),
-  confirmed_at: z.string().nullable(),
-});
-
-const transactionListSchema = z.array(transactionSchema);
-
-type Transaction = z.infer<typeof transactionSchema>;
-
-export const instant = false;
+import type { Transaction } from "@/features/transactions/schemas/transaction";
+import { getTransactionsAction } from "@/server-actions/transactions/actions";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -37,16 +18,12 @@ export default function TransactionsPage() {
     let mounted = true;
     async function load() {
       try {
-        const response = await requestAgentApi("/payments");
-        if (!response.ok) {
-          setError(`Failed to load transactions (${response.status})`);
+        const result = await getTransactionsAction();
+        if (!result.ok) {
+          setError(result.message);
           return;
         }
-        const payload = await response.json();
-        const parsed = transactionListSchema.safeParse(payload.transactions ?? payload);
-        if (parsed.success && mounted) {
-          setTransactions(parsed.data);
-        }
+        if (mounted) setTransactions(result.data);
       } catch (err) {
         if (mounted) {
           setError(err instanceof Error ? err.message : "Could not load transactions.");
@@ -62,17 +39,13 @@ export default function TransactionsPage() {
   async function refresh() {
     setIsLoading(true);
     try {
-      const response = await requestAgentApi("/payments");
-      if (!response.ok) {
-        setError(`Failed to refresh transactions (${response.status})`);
+      const result = await getTransactionsAction();
+      if (!result.ok) {
+        setError(result.message);
         return;
       }
-      const payload = await response.json();
-      const parsed = transactionListSchema.safeParse(payload.transactions ?? payload);
-      if (parsed.success) {
-        setTransactions(parsed.data);
-        setError(null);
-      }
+      setTransactions(result.data);
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not refresh transactions.");
     } finally {

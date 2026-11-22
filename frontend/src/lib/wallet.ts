@@ -7,9 +7,12 @@ import { injected, walletConnect } from "wagmi/connectors";
 // EasyPay supports any EVM-compatible wallet: MetaMask, Rainbow, Trust Wallet,
 // Coinbase Wallet, Phantom (EVM mode), and more via WalletConnect.
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "";
+let cachedWalletConfig: Config | undefined;
 
 export function walletConfig(): Config {
-  return createConfig({
+  if (cachedWalletConfig) return cachedWalletConfig;
+
+  cachedWalletConfig = createConfig({
     chains: [sepolia],
     connectors: [
       injected({ target: "metaMask" }),
@@ -30,6 +33,7 @@ export function walletConfig(): Config {
       ),
     },
   });
+  return cachedWalletConfig;
 }
 
 declare module "wagmi" {

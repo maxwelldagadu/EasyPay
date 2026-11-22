@@ -34,7 +34,10 @@ export async function requestAgentApi(
   const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:8000";
   try {
     // Disable caching because agent configuration is private and mutations must be immediately visible.
-    const featurePrefix = path.startsWith("/financial")
+    const featurePrefix =
+      path.startsWith("/financial") ||
+      path.startsWith("/wallet") ||
+      path.startsWith("/payments")
       ? "/api/v1"
       : "/api/v1/agents";
     return await fetch(`${apiUrl.replace(/\/$/, "")}${featurePrefix}${path}`, {

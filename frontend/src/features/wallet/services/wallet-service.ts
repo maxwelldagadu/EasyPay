@@ -2,7 +2,10 @@
 
 import { z } from "zod";
 
-import { walletAddressSchema, usdcAmountSchema } from "@/features/wallet/schemas/wallet";
+import {
+  walletAddressSchema,
+  walletBalanceSchema,
+} from "@/features/wallet/schemas/wallet";
 import { AgentApiError, requestAgentApi } from "@/features/agents/services/server-api";
 
 export type WalletActionResult<T> =
@@ -23,10 +26,9 @@ export async function saveWalletAddressAction(
     return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid wallet address." };
   }
   try {
-    const response = await requestAgentApi("/wallet/address", {
+    const query = new URLSearchParams({ wallet_address: parsed.data.address });
+    const response = await requestAgentApi(`/wallet/address?${query}`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ wallet_address: parsed.data.address }),
     });
     if (!response.ok) {
       return { ok: false, message: await getWalletApiError(response) };
@@ -51,6 +53,28 @@ export async function getWalletAddressAction(): Promise<
     }
     const payload = await response.json();
     return { ok: true, data: { address: payload.address ?? null } };
+  } catch (error) {
+    if (error instanceof AgentApiError) {
+      return { ok: false, message: error.message };
+    }
+    throw error;
+  }
+}
+
+export async function getWalletBalanceAction(): Promise<
+  WalletActionResult<{ balanceUsdc: string }>
+> {
+  try {
+    const response = await requestAgentApi("/wallet/balance");
+    if (!response.ok) {
+      return { ok: false, message: await getWalletApiError(response) };
+    }
+    const payload: unknown = await response.json();
+    const parsed = walletBalanceSchema.safeParse(payload);
+    if (!parsed.success) {
+      return { ok: false, message: "The wallet service returned an invalid balance." };
+    }
+    return { ok: true, data: { balanceUsdc: parsed.data.balance_usdc } };
   } catch (error) {
     if (error instanceof AgentApiError) {
       return { ok: false, message: error.message };
