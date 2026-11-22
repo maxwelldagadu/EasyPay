@@ -4,7 +4,7 @@ from typing import Any
 
 from web3 import Web3
 from web3.contract import Contract
-from web3.middleware import async_geth_poa_middleware
+from web3.middleware import ExtraDataToPOAMiddleware
 
 from app.core.config import settings
 
@@ -51,7 +51,8 @@ class BlockchainService:
             raise ValueError("ETHEREUM_RPC_URL is required for blockchain interactions")
         self._w3 = Web3(Web3.HTTPProvider(settings.ethereum_rpc_url))
         # Sepolia and other PoA testnets require the geth POA middleware.
-        self._w3.middleware_onion.inject(async_geth_poa_middleware, layer=0)
+        # In web3.py 7.x, the middleware is applied via the provider middleware-onion.
+        self._w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
         self._contract: Contract | None = None
         if settings.usdc_testnet_contract_address:
             self._contract = self._w3.eth.contract(
