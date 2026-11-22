@@ -1,4 +1,3 @@
-from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import CheckConstraint, DateTime, Numeric, String
@@ -19,3 +18,4 @@ class TestnetBalance(Base, TimestampMixin):
         nullable=False,
         default=Decimal("0"),
     )
+    wallet_address: Mapped[str | None] = mapped_column(String(42), nullable=True)

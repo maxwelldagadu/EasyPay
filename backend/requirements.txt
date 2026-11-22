@@ -1,12 +1,12 @@
 alembic==1.20.1
 asyncpg==0.32.0
-eth-abi==7.3.2
-eth-account==0.13.1
-eth-keyfile==0.7.1
-eth-utils==4.1.1
+eth-abi==6.0.0
+eth-account==0.14.0
+eth-keyfile==0.10.0
+eth-utils==6.0.0
 fastapi==0.165.0
 greenlet>=3.3.0
-hexbytes==1.1.0
+hexbytes==2.0.0
 httpx==0.28.1
 pydantic-settings==2.16.3
 pytest==9.2.0
@@ -14,5 +14,5 @@ pytest-asyncio==1.5.0
 python-multipart==0.0.34
 SQLAlchemy==2.1.9
 uvicorn[standard]==0.54.0
-web3==7.4.0
+web3==7.14.0
 

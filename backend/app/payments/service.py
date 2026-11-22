@@ -42,7 +42,7 @@ class PaymentsService:
         from app.models.audit_log import AuditLog
 
         entry = AuditLog(
-            id=str(uuid4()),
+            id=str(uuid.uuid4()),
             user_id=user_id,
             agent_id=agent_id,
             action=action,
@@ -67,7 +67,8 @@ class PaymentsService:
         idempotency_key: str,
         wallet_address: str,
     ):
-        # Execute an approved payment: revalidate controls, submit on-chain, record result.
+        # Prepare an approved wallet transfer: revalidate controls and estimate gas.
+        # No private key or unrestricted on-chain submission occurs on the backend.
         approval = await self._session.get(PaymentApproval, approval_id)
         if approval is None or approval.user_id != owner_id:
             raise HTTPException(
@@ -100,6 +101,11 @@ class PaymentsService:
         existing = await self._existing_transaction_by_idempotency(idempotency_key)
         if existing is not None:
             from app.schemas.transactions import TransactionRead
+            if existing.user_id != owner_id:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Idempotency key is already associated with another transaction",
+                )
             return TransactionRead.model_validate(existing)
 
         if not self._blockchain.is_valid_address(wallet_address):
@@ -109,7 +115,7 @@ class PaymentsService:
             )
 
         tx = Transaction(
-            id=str(uuid4()),
+            id=str(uuid.uuid4()),
             user_id=owner_id,
             agent_id=agent.id,
             approval_id=approval.id,
@@ -148,7 +154,8 @@ class PaymentsService:
             tx.gas_used = gas_estimate
             await self._session.commit()
 
-            tx.status = "submitted"
+            # The wallet performs the signed transfer. The transaction remains
+            # pending until its hash is reported and verified.
             await self._session.commit()
         except Exception as exc:
             logger.exception("Payment submission failed")
@@ -167,7 +174,7 @@ class PaymentsService:
 
         await self._record_audit(
             owner_id,
-            "payment_submitted",
+            "payment_prepared",
             agent_id=agent.id,
             subject_type="transaction",
             subject_id=tx.id,
@@ -182,22 +189,45 @@ class PaymentsService:
     async def confirm_transaction(
         self, owner_id: str, tx_id: str, tx_hash: str
     ):
-        # Mark a submitted transaction as confirmed after the wallet reports success.
+        # Bind a wallet-reported hash to the transaction and verify receipt state
+        # before marking it confirmed.
         tx = await self._session.get(Transaction, tx_id)
         if tx is None or tx.user_id != owner_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Transaction not found",
             )
-        if tx.status != "submitted":
+        if tx.status not in {"pending", "submitted"}:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Transaction is not in a submittable state",
             )
+        if len(tx_hash) != 66 or not tx_hash.startswith("0x"):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Invalid Ethereum transaction hash",
+            )
+        try:
+            int(tx_hash[2:], 16)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Invalid Ethereum transaction hash",
+            ) from exc
 
         tx.tx_hash = tx_hash
-        tx.status = "confirmed"
-        tx.confirmed_at = datetime.now(UTC)
+        receipt = await self._blockchain.get_transaction_receipt(tx_hash)
+        if receipt is not None:
+            successful = receipt.get("status") == 1 or receipt.get("status") is True
+            if successful:
+                tx.status = "confirmed"
+                tx.confirmed_at = datetime.now(UTC)
+                tx.block_number = receipt.get("blockNumber")
+            else:
+                tx.status = "failed"
+                tx.error_message = "On-chain transaction reverted"
+        else:
+            tx.status = "submitted"
         await self._session.commit()
         await self._session.refresh(tx)
 
@@ -205,13 +235,20 @@ class PaymentsService:
         if approval and approval.status == "approved":
             approval.status = "approved"
 
+        audit_action = (
+            "payment_confirmed"
+            if tx.status == "confirmed"
+            else "payment_failed"
+            if tx.status == "failed"
+            else "payment_submitted"
+        )
         await self._record_audit(
             owner_id,
-            "payment_confirmed",
+            audit_action,
             agent_id=tx.agent_id,
             subject_type="transaction",
             subject_id=tx.id,
-            details={"tx_hash": tx_hash},
+            details={"tx_hash": tx_hash, "status": tx.status},
         )
         from app.schemas.transactions import TransactionRead
         return TransactionRead.model_validate(tx)

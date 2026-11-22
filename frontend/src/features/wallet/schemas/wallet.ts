@@ -6,7 +6,7 @@ export const walletAddressSchema = z
 
 export const usdcAmountSchema = z
   .string()
-  .regex(/^(?:0|[1-9]\d*)(?:.\d{1,6})?$/, "Enter a valid USDC amount (max 6 decimals)")
+  .regex(/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/, "Enter a valid USDC amount (max 6 decimals)")
   .refine((val) => Number(val) > 0, "Amount must be greater than zero");
 
 export const chainIdSchema = z.number().int().positive();

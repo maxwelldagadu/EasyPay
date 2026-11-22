@@ -2,9 +2,10 @@ import logging
 from decimal import Decimal
 from typing import Any
 
-from web3 import Web3
-from web3.contract import Contract
+from web3 import AsyncWeb3, Web3
+from web3.contract import AsyncContract
 from web3.middleware import ExtraDataToPOAMiddleware
+from web3.providers import AsyncHTTPProvider
 
 from app.core.config import settings
 
@@ -49,22 +50,21 @@ class BlockchainService:
     def __init__(self) -> None:
         if not settings.ethereum_rpc_url:
             raise ValueError("ETHEREUM_RPC_URL is required for blockchain interactions")
-        self._w3 = Web3(Web3.HTTPProvider(settings.ethereum_rpc_url))
+        self._w3 = AsyncWeb3(AsyncHTTPProvider(settings.ethereum_rpc_url))
         # Sepolia and other PoA testnets require the geth POA middleware.
         # In web3.py 7.x, the middleware is applied via the provider middleware-onion.
         self._w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
-        self._contract: Contract | None = None
+        self._contract: AsyncContract | None = None
         if settings.usdc_testnet_contract_address:
             self._contract = self._w3.eth.contract(
                 address=Web3.to_checksum_address(settings.usdc_testnet_contract_address),
                 abi=USDC_ABI,
             )
 
-    @property
-    def is_connected(self) -> bool:
+    async def is_connected(self) -> bool:
         # Return True only when the RPC endpoint responds to a peer-count request.
         try:
-            return self._w3.is_connected()
+            return await self._w3.is_connected()
         except Exception:
             return False
 
@@ -73,7 +73,7 @@ class BlockchainService:
         return settings.chain_id
 
     @property
-    def contract(self) -> Contract:
+    def contract(self) -> AsyncContract:
         if self._contract is None:
             raise ValueError("USDC testnet contract address is not configured")
         return self._contract

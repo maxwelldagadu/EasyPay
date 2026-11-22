@@ -1,19 +1,11 @@
 "use client";
 
 import { Heart, Mail } from "lucide-react";
-import { useEffect, useState } from "react";
+// Render the current year directly so the footer has no effect-driven state.
 
 
 
 export default function Footer() {
-
-  const [date, setDate] = useState<number | null>(null);
-  
-  // Sets date of year
-  useEffect(() => {
-    setDate(new Date().getFullYear());
-  }, []);
-
   return (
     <footer className="relative overflow-hidden border-t border-white/[0.08] bg-[#10120f] px-5 pb-8 pt-12 text-white sm:px-8 sm:pt-16 lg:px-12">
       <div
@@ -57,7 +49,7 @@ export default function Footer() {
             for a more thoughtful way to pay.
           </p>
           <p>
-            © <span suppressHydrationWarning>{date}</span> EasyPay. All rights reserved.
+            © EasyPay. All rights reserved.
           </p>
         </div>
       </div>
