@@ -31,13 +31,11 @@ export function WalletConnectButton({
   if (isConnected && address) {
     return (
       <Button
-        variant="outline"
-        size="sm"
         onClick={() => {
           disconnect();
           onDisconnect?.();
         }}
-        className="flex items-center gap-2 text-neon-magenta hover:text-white"
+        className="flex items-center gap-2 bg-neon-purple text-sm text-white transition-colors hover:bg-neon-magenta"
       >
         <LogOut className="size-4" /> Disconnect {address.slice(0, 6)}…{address.slice(-4)}
       </Button>
@@ -57,13 +55,12 @@ export function WalletConnectButton({
       )}
       {walletConnect && (
         <Button
-          variant="outline"
           onClick={() => handleConnect("walletConnect")}
           disabled={isConnecting}
-          className="flex items-center gap-2 text-sm"
+          className="flex items-center gap-2 bg-neon-purple text-sm text-white transition-colors hover:bg-neon-magenta"
         >
           <Power className="size-4" />
-          {isConnecting ? "Connecting…" : "WalletConnect"}
+          {isConnecting ? "Connecting…" : "Connect Wallet"}
         </Button>
       )}
     </div>
