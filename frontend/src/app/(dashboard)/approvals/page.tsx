@@ -54,6 +54,7 @@ function ApprovalsPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
+  const [approvingId, setApprovingId] = useState<string | null>(null);
   const { address } = useAccount();
   const chainId = useChainId();
   const { writeContractAsync } = useWriteContract();
@@ -90,58 +91,63 @@ function ApprovalsPageContent() {
 
   function approve(approvalId: string, pin: string) {
     setError(null);
+    setApprovingId(approvalId);
     startTransition(async () => {
-      const result = await approvePaymentAction(approvalId, pin);
-      if (!result.ok) {
-        setError(result.message);
-        return;
-      }
-      upsertApproval(result.data);
-      if (!address) {
-        setError("Connect a Sepolia wallet before executing the approved payment.");
-        return;
-      }
-      if (chainId !== sepolia.id) {
-        setError("Switch your wallet to the Sepolia testnet before execution.");
-        return;
-      }
-      const contractAddress =
-        process.env.NEXT_PUBLIC_USDC_TESTNET_CONTRACT_ADDRESS as Address | undefined;
-      if (!contractAddress) {
-        setError("The Sepolia USDC contract address is not configured.");
-        return;
-      }
-      const prepared = await executePaymentAction({
-        approvalId: result.data.id,
-        walletAddress: address,
-      });
-      if (!prepared.ok) {
-        setError(prepared.message);
-        return;
-      }
       try {
-        const txHash = await writeContractAsync({
-          chainId: sepolia.id,
-          address: contractAddress,
-          abi: USDC_TRANSFER_ABI,
-          functionName: "transfer",
-          args: [
-            result.data.recipient_address as Address,
-            parseUnits(result.data.amount_usdc, 6),
-          ],
+        const result = await approvePaymentAction(approvalId, pin);
+        if (!result.ok) {
+          setError(result.message);
+          return;
+        }
+        upsertApproval(result.data);
+        if (!address) {
+          setError("Connect a Sepolia wallet before executing the approved payment.");
+          return;
+        }
+        if (chainId !== sepolia.id) {
+          setError("Switch your wallet to the Sepolia testnet before execution.");
+          return;
+        }
+        const contractAddress =
+          process.env.NEXT_PUBLIC_USDC_TESTNET_CONTRACT_ADDRESS as Address | undefined;
+        if (!contractAddress) {
+          setError("The Sepolia USDC contract address is not configured.");
+          return;
+        }
+        const prepared = await executePaymentAction({
+          approvalId: result.data.id,
+          walletAddress: address,
         });
-        const confirmed = await confirmPaymentAction({
-          transactionId: prepared.data.id,
-          txHash,
-        });
-        if (!confirmed.ok) setError(confirmed.message);
-        else setError(null);
-      } catch (walletError) {
-        setError(
-          walletError instanceof Error
-            ? walletError.message
-            : "The wallet did not authorize the USDC transfer.",
-        );
+        if (!prepared.ok) {
+          setError(prepared.message);
+          return;
+        }
+        try {
+          const txHash = await writeContractAsync({
+            chainId: sepolia.id,
+            address: contractAddress,
+            abi: USDC_TRANSFER_ABI,
+            functionName: "transfer",
+            args: [
+              result.data.recipient_address as Address,
+              parseUnits(result.data.amount_usdc, 6),
+            ],
+          });
+          const confirmed = await confirmPaymentAction({
+            transactionId: prepared.data.id,
+            txHash,
+          });
+          if (!confirmed.ok) setError(confirmed.message);
+          else setError(null);
+        } catch (walletError) {
+          setError(
+            walletError instanceof Error
+              ? walletError.message
+              : "The wallet did not authorize the USDC transfer.",
+          );
+        }
+      } finally {
+        setApprovingId(null);
       }
     });
   }
@@ -162,7 +168,7 @@ function ApprovalsPageContent() {
         eyebrow="Financial controls"
         title="Payment approvals"
       />
-      {isLoading ? (
+      {isLoading && approvals.length === 0 ? (
         <ApprovalPageSkeleton />
       ) : (
         <>
@@ -175,6 +181,7 @@ function ApprovalsPageContent() {
           <ApprovalError message={error} />
           <ApprovalList
             approvals={approvals}
+            approvingId={approvingId}
             isPending={isPending}
             onApprove={approve}
             onReject={reject}

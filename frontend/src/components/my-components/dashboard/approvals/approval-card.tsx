@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 import type { PaymentApproval } from "@/features/approvals/schemas/approval";
 
 interface ApprovalCardProps {
   approval: PaymentApproval;
   isPending: boolean;
+  isApproving: boolean;
   onApprove: (approvalId: string, pin: string) => void;
   onReject: (approvalId: string) => void;
 }
@@ -14,6 +16,7 @@ interface ApprovalCardProps {
 export function ApprovalCard({
   approval,
   isPending,
+  isApproving,
   onApprove,
   onReject,
 }: ApprovalCardProps) {
@@ -68,12 +71,18 @@ export function ApprovalCard({
             />
           </label>
           <button
+            aria-busy={isApproving}
             className="h-11 rounded-xl bg-neon-purple px-4 text-sm font-semibold text-white disabled:opacity-50"
             disabled={isPending || pin.length !== 4}
             onClick={() => onApprove(approval.id, pin)}
             type="button"
           >
-            Approve
+            {isApproving ? (
+              <span className="inline-flex items-center gap-2">
+                <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
+                Approving...
+              </span>
+            ) : "Approve"}
           </button>
           <button
             className="h-11 rounded-xl border border-white/10 px-4 text-sm font-semibold text-white/65 disabled:opacity-50"

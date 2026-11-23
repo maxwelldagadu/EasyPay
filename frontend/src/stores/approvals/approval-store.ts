@@ -14,6 +14,7 @@ interface ApprovalStore {
   setBalance: (balance: TestnetBalance) => void;
   upsertApproval: (approval: PaymentApproval) => void;
   removePendingApproval: (approvalId: string) => void;
+  clear: () => void;
 }
 
 export const useApprovalStore = create<ApprovalStore>((set) => ({
@@ -36,4 +37,5 @@ export const useApprovalStore = create<ApprovalStore>((set) => ({
           : approval,
       ),
     })),
+  clear: () => set({ approvals: [], balance: null }),
 }));

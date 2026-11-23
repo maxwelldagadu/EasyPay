@@ -8,6 +8,7 @@ import { ApprovalCard } from "@/components/my-components/dashboard/approvals/app
 interface ApprovalListProps {
   approvals: PaymentApproval[];
   isPending: boolean;
+  approvingId: string | null;
   onApprove: (approvalId: string, pin: string) => void;
   onReject: (approvalId: string) => void;
 }
@@ -15,6 +16,7 @@ interface ApprovalListProps {
 export function ApprovalList({
   approvals,
   isPending,
+  approvingId,
   onApprove,
   onReject,
 }: ApprovalListProps) {
@@ -37,6 +39,7 @@ export function ApprovalList({
       {approvals.map((approval) => (
         <ApprovalCard
           approval={approval}
+          isApproving={approvingId === approval.id}
           isPending={isPending}
           key={approval.id}
           onApprove={onApprove}

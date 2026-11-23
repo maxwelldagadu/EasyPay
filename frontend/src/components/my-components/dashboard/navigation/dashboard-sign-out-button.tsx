@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { signOutAction } from "@/server-actions/authentication/actions";
+import { useApprovalStore } from "@/stores/approvals/approval-store";
 
 // End the Better Auth session from the shared dashboard header and report failures accessibly.
 export function DashboardSignOutButton({ mobileMenu = false }: { mobileMenu?: boolean }) {
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const clearApprovals = useApprovalStore((state) => state.clear);
 
   async function signOut() {
     // Prevent duplicate logout requests while Better Auth clears the current session.
@@ -22,6 +24,7 @@ export function DashboardSignOutButton({ mobileMenu = false }: { mobileMenu?: bo
         setError(result.message);
         return;
       }
+      clearApprovals();
       router.replace("/login");
       router.refresh();
     } catch (error) {

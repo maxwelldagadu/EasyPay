@@ -22,6 +22,7 @@ import {
   sendAgentConversationMessageAction,
 } from "@/server-actions/agents/conversation-actions";
 import { createPaymentApprovalAction } from "@/server-actions/approvals/actions";
+import { useApprovalStore } from "@/stores/approvals/approval-store";
 
 const fieldLabels: Record<keyof AgentConfigurationSnapshot, string> = {
   name: "Agent name",
@@ -62,6 +63,7 @@ function PaymentProposalCard({
   const [isCreating, startCreating] = useTransition();
   const [creationError, setCreationError] = useState<string | null>(null);
   const [created, setCreated] = useState(false);
+  const upsertApproval = useApprovalStore((state) => state.upsertApproval);
 
   function createApproval() {
     if (!proposal.amount_usdc || !proposal.recipient_address) return;
@@ -73,7 +75,10 @@ function PaymentProposalCard({
         recipientAddress: proposal.recipient_address as string,
         originalInstruction: "Create a USDC testnet payment approval",
       });
-      if (result.ok) setCreated(true);
+      if (result.ok) {
+        upsertApproval(result.data);
+        setCreated(true);
+      }
       else setCreationError(result.message);
     });
   }
@@ -136,11 +141,13 @@ function PaymentProposalCard({
       {!isBlocked && proposal.status !== "incomplete" && (
         <div className="mt-4">
           <button
-            className="inline-flex min-h-10 items-center rounded-lg bg-neon-purple px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
+            aria-busy={isCreating}
+            className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-neon-purple px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
             disabled={isCreating || created}
             onClick={createApproval}
             type="button"
           >
+            {isCreating && <LoaderCircle aria-hidden="true" className="size-3.5 animate-spin" />}
             {isCreating ? "Creating approval..." : created ? "Approval request created" : "Create approval request"}
           </button>
           {creationError && <p className="mt-2 text-xs text-red-200" role="alert">{creationError}</p>}
