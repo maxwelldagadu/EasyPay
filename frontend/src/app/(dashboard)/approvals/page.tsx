@@ -121,6 +121,7 @@ function ApprovalsPageContent() {
       }
       try {
         const txHash = await writeContractAsync({
+          chainId: sepolia.id,
           address: contractAddress,
           abi: USDC_TRANSFER_ABI,
           functionName: "transfer",
